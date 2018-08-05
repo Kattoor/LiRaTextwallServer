@@ -1,0 +1,36 @@
+<style>
+    #container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+    }
+
+    .message {
+        background-color: #3498db;
+        border-radius: 5px;
+        margin: 15px;
+        padding: 15px;
+    }
+</style>
+
+<div id="container"></div>
+
+<script>
+    var container = document.getElementById('container');
+    var lastId = -1;
+    setInterval(() => {
+        fetch('/messages?from=' + (lastId + 1)).then(response => response.json()).then(data => {
+            for (var d of data) {
+                var newDiv = document.createElement('div');
+                newDiv.innerHTML = d.message;
+                newDiv.className = 'message';
+                container.insertBefore(newDiv, container.firstChild);
+                console.log(d);
+                lastId = d.id;
+                console.log('lastId: ' + lastId);
+            }
+        });
+    }, 1000);
+</script>
