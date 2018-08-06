@@ -8,6 +8,9 @@ http.createServer((req, res) => {
         handleRoot(req, res);
     else if (req.url.startsWith('/messages'))
         handleMessagesRequest(req, res);
+    else
+        handleStatic(req, res);
+
 }).listen(8080);
 
 function handleRoot(req, res) {
@@ -37,4 +40,14 @@ function handleMessagesRequest(req, res) {
         .map((message, index) => ({message, id: index + fromId}));
     res.write(JSON.stringify(requestedMessages));
     res.end();
+}
+
+function handleStatic(req, res) {
+    if (req.url.endsWith('.svg'))
+        res.writeHead(200, {'Content-Type': 'image/svg+xml'});
+    else if (req.url.endsWith('.js'))
+        res.writeHead(200, {'Content-Type': 'application/javascript'});
+    else if (req.url.endsWith('.css'))
+        res.writeHead(200, {'Content-Type': 'text/css'});
+    res.end(fs.readFileSync('./' + req.url.slice(1)));
 }
